@@ -7,7 +7,7 @@
             <input type="text" v-model="title" name="title" required>
             <label for="details" class="uppercase "> Details </label>
             <textarea name="details" id="" cols="30" rows="10" v-model="details"></textarea>
-            <button > Add Project</button>
+            <button > Edit Project</button>
         </form>
     </div>
 </template>
@@ -20,20 +20,30 @@ export default {
     },
    data(){
        return {
-           title: '',
-           details: '',
+            title: '',
+            details: '',
+            uri: 'http://localhost:3000/projects/'+ this.$route.params.id
        }
    },
    methods:{
+       getProjectDataData(){
+            fetch( this.uri )
+            .then( res =>res.json())
+            .then( data => {
+                this.title = data.title
+                this.details =  data.details
+            }).catch( (err) => { console.log( err )})
+       },
+
        handleSubmit(e){
-       e.preventDefault();
+        e.preventDefault()
         let project = {
             title : this.title,
             details: this.details,
             complete: false,
         }
-        fetch( 'http://localhost:3000/projects', {
-            method: 'POST',
+        fetch( this.uri, {
+            method: 'PATCH',
             headers: { 'Content-Type' :  'application/json' },
             body: JSON.stringify( project )
         } )

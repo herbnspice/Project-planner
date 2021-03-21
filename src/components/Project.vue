@@ -20,7 +20,7 @@ export default {
     data(){
         return {
             showDetails: false,
-            uri: 'http://localhost:3000/projects/'+ this.$router.id
+            uri: 'http://localhost:3000/projects/'+ this.project.id
         }
     },
     methods:{
@@ -38,7 +38,8 @@ export default {
                 .then( () => this.$emit('handleCompleteProject', this.project.id ) )
                 .catch( err => console.log(err) )
         }
-    },
+    }
+
 }
 </script>
 <style scoped>
