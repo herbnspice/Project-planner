@@ -1,0 +1,73 @@
+<template>
+    <div class="project " :class="{'complete' : project.complete  }">
+        <div class="actions flex justify-between items-center">
+            <h3  @click="showDetails = !showDetails">{{ project.title}} </h3>
+            <div class="icons">
+                <router-link :to="'/edit/'+project.id" tag="span" class="material-icons" >edit</router-link >
+                <span class="material-icons" @click="deleteProject"> delete</span>
+                <span class="material-icons" @click="toggleDoneProject" :class="{'complete' : project.complete  }"> done</span>
+            </div>
+        </div>
+        <div class="details" v-show="showDetails">
+            <p> {{ project.details }} </p>
+        </div>
+     
+    </div>
+</template>
+<script>
+export default {
+    props: [ 'project', ],
+    data(){
+        return {
+            showDetails: false,
+            uri: 'http://localhost:3000/projects/'+ this.$router.id
+        }
+    },
+    methods:{
+        deleteProject(){
+            fetch( this.uri, { method: 'DELETE' })
+                .then( () => this.$emit('handleDeleteProject', this.project.id ) )
+
+        },
+        toggleDoneProject(){
+            fetch( this.uri, {
+                    method: 'PATCH',
+                    headers: {'Content-Type' : 'application/json'},
+                    body: JSON.stringify( { complete: !this.project.complete }),
+                })
+                .then( () => this.$emit('handleCompleteProject', this.project.id ) )
+                .catch( err => console.log(err) )
+        }
+    },
+}
+</script>
+<style scoped>
+    .project{
+        margin: 30px auto;
+        background: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        box-shadow: 1px 2px 3px rgba( 0,0,0,0.05);
+        border-left: 4px solid #e90074;
+    }
+    .project.complete {
+         border-left: 4px solid #00ce89;
+    }
+    h3{
+        cursor: pointer;
+        font-weight: bolder;
+        font-size: 20px;
+    }
+    .material-icons{
+        margin:0px 10px 0px 0px;
+        color: #bbb;
+        cursor: pointer;
+        font-size: 24px;
+    }
+    .material-icons:hover{
+        color: #777;
+    }
+    .icons .complete  {
+        color: #00ce89;
+    }
+</style>
